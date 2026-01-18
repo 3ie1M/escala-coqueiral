@@ -1,0 +1,447 @@
+/* 1. VARIÁVEIS DE CORES E TEMAS (Centralização de estilos) */
+:root {
+  --primary: #002e5d;
+  --secondary: #6f42c1;
+  --bg: #f4f7f6;
+  --white: #ffffff;
+  --border: #dee2e6;
+  --text: #2f3640;
+  --input-bg: #f9f9f9;
+  --danger: #e74c3c;
+  --success: #2ecc71;
+}
+
+/* 2. MODO NOTURNO (Substituição das variáveis de cor) */
+body.dark-mode {
+  --bg: #0f172a;
+  --white: #1e293b;
+  --border: #334155;
+  --text: #f1f5f9;
+  --input-bg: #0f172a;
+}
+
+/* 3. ESTILOS GERAIS E LAYOUT */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  padding: 8px;
+  margin: 0;
+  transition: background 0.3s;
+}
+
+/* Cabeçalho principal com degradê */
+.header-app {
+  position: relative;
+  text-align: center;
+  padding: 30px 10px;
+  background: linear-gradient(135deg, #002e5d 0%, #004a99 100%);
+  margin: -8px -8px 15px -8px;
+  color: white;
+  border-radius: 0 0 30px 30px;
+}
+.logo-header {
+  width: 140px;
+  margin-bottom: 10px;
+  filter: brightness(0) invert(1);
+}
+.by-header {
+  font-size: 0.7em;
+  opacity: 0.8;
+  margin-top: 5px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  text-transform: lowercase;
+}
+
+body.dark-mode .by-header {
+  color: #cbd5e1;
+  opacity: 1;
+}
+
+/* Controles flutuantes (DarkMode e Redes Sociais) */
+.side-controls {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-control {
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1em;
+  backdrop-filter: blur(4px);
+  text-decoration: none;
+  transition: 0.2s;
+}
+.btn-control:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Container do formulário */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.section-title {
+  font-weight: 700;
+  color: var(--primary);
+  margin: 20px 0 10px 0;
+  border-left: 4px solid var(--primary);
+  padding-left: 10px;
+  font-size: 0.85em;
+  text-transform: uppercase;
+}
+body.dark-mode .section-title {
+  color: #60a5fa;
+  border-color: #60a5fa;
+}
+
+.grid-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.75em;
+  color: #747d8c;
+  margin-bottom: 4px;
+}
+body.dark-mode label {
+  color: #94a3b8;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 0.9em;
+  background: var(--input-bg);
+  color: var(--text);
+}
+
+/* 4. COMPONENTES DE GESTÃO DE MEMBROS */
+.legenda-dispo {
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 0.75em;
+  color: #856404;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+body.dark-mode .legenda-dispo {
+  background: #1e1b0b;
+  border-color: #423b13;
+  color: #fbbf24;
+}
+.legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cadastro-membros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+.lista-membros {
+  background: var(--input-bg);
+  border-radius: 10px;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+}
+
+.membro-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+.membro-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.membro-nome {
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+/* Botões de dias (D, S, T, Q...) */
+.mini-dias {
+  display: flex;
+  gap: 4px;
+}
+.mini-dia-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 0.6em;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.mini-dia-btn.active {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+.mini-dia-btn.inactive {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+body.dark-mode .mini-dia-btn.inactive {
+  background: #451a1a;
+  color: #f87171;
+  border-color: #7f1d1d;
+  opacity: 1;
+}
+
+/* 5. CONFIGURAÇÕES DE FREQUÊNCIA (CARDS DOS DIAS) */
+.weekdays {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 15px 0;
+  width: 100%;
+}
+.day-card {
+  flex: 1;
+  min-width: 0;
+  background: var(--white);
+  padding: 8px 2px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.day-card.active {
+  border-color: var(--primary);
+  background: rgba(0, 46, 93, 0.1);
+}
+body.dark-mode .day-card.active {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.day-name {
+  font-weight: 800;
+  font-size: 0.7em;
+  margin-bottom: 5px;
+}
+.day-card input[type="number"] {
+  width: 85%;
+  max-width: 38px;
+  padding: 4px 0;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.75em;
+  font-weight: bold;
+  background: white;
+  color: black;
+}
+
+.label-pess {
+  font-size: 0.55em;
+  color: #888;
+  margin-top: 2px;
+}
+body.dark-mode .label-pess {
+  color: #cbd5e1;
+}
+
+.especial-input-div {
+  display: none;
+  border-top: 1px solid #eee;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+/* 6. BOTÕES DE AÇÃO */
+.actions {
+  margin: 25px 0;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.actions button {
+  flex: 1;
+  height: 45px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  font-size: 0.85em;
+  transition: 0.2s;
+}
+.btn-generate {
+  background: var(--primary);
+  color: white;
+}
+.btn-download {
+  background: var(--secondary);
+  color: white;
+}
+
+.btn-clear {
+  background: #f8f9fa;
+  color: var(--danger);
+  border: 1px solid #eee !important;
+}
+.btn-clear:hover {
+  background: #fff5f5;
+  border-color: var(--danger) !important;
+  transform: translateY(-2px);
+}
+body.dark-mode .btn-clear {
+  background: #1e293b;
+  border-color: #334155 !important;
+}
+body.dark-mode .btn-clear:hover {
+  background: #451a1a;
+  border-color: var(--danger) !important;
+}
+
+/* 7. TABELA DE RESULTADOS */
+#escalaResultado {
+  padding: 25px;
+  background: var(--white);
+  border-radius: 10px;
+  text-align: center;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 0.9em;
+  text-align: left;
+}
+th {
+  background: #f8f9fa;
+  color: var(--primary);
+  padding: 12px 8px;
+  border-bottom: 2px solid var(--primary);
+}
+body.dark-mode th {
+  background: #334155;
+  color: #fff;
+  border-bottom-color: #60a5fa;
+}
+td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--border);
+}
+body.dark-mode td {
+  color: #f1f5f9;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1em;
+  padding: 4px;
+  opacity: 0.7;
+}
+body.dark-mode .btn-icon {
+  filter: brightness(1.5);
+}
+.titulo-escala-gerada {
+  display: none;
+  color: var(--primary);
+  margin: 10px 0;
+  font-size: 1.5em;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+body.dark-mode .titulo-escala-gerada {
+  color: #fff;
+}
+
+/* Badges específicas para o departamento de Louvor */
+.badge-louvor {
+  font-size: 0.75em;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin-right: 5px;
+  display: inline-block;
+  min-width: 100px;
+  text-align: center;
+}
+.bg-congregacional {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+.bg-especial {
+  background: #f3e5f5;
+  color: #4a148c;
+}
+body.dark-mode .bg-congregacional {
+  background: #1e3a8a;
+  color: #bfdbfe;
+}
+body.dark-mode .bg-especial {
+  background: #4c1d95;
+  color: #ddd6fe;
+}
+
+/* Ocultação de elementos durante o "print" da imagem */
+.capturando .col-acoes,
+.capturando .btn-theme-toggle,
+.capturando .side-controls,
+.capturando .no-capture {
+  display: none !important;
+}
+.capturando .titulo-escala-gerada {
+  display: block !important;
+}
+.capturando {
+  width: 600px !important;
+}

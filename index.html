@@ -1,506 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escala Comunicação Boa Vista</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escala Coqueiral</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    
-    <style>
-        /* 1. VARIÁVEIS DE CORES E TEMAS (Centralização de estilos) */
-        :root { 
-            --primary: #002e5d; 
-            --secondary: #6f42c1;
-            --bg: #f4f7f6; 
-            --white: #ffffff; 
-            --border: #dee2e6; 
-            --text: #2f3640; 
-            --input-bg: #f9f9f9;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-        }
-
-        /* 2. MODO NOTURNO (Substituição das variáveis de cor) */
-        body.dark-mode {
-            --bg: #0f172a;
-            --white: #1e293b;
-            --border: #334155;
-            --text: #f1f5f9;
-            --input-bg: #0f172a;
-        }
-
-        /* 3. ESTILOS GERAIS E LAYOUT */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); padding: 8px; margin: 0; transition: background 0.3s; }
-        
-        /* Cabeçalho principal com degradê */
-        .header-app { 
-            position: relative;
-            text-align: center; padding: 30px 10px; 
-            background: linear-gradient(135deg, #002e5d 0%, #004a99 100%); 
-            margin: -8px -8px 15px -8px; color: white; border-radius: 0 0 30px 30px;
-        }
-        .logo-header { width: 140px; margin-bottom: 10px; filter: brightness(0) invert(1); }
-        .by-header { font-size: 0.7em; opacity: 0.8; margin-top: 5px; font-weight: 300; letter-spacing: 1px; text-transform: lowercase; }
-
-        body.dark-mode .by-header { color: #cbd5e1; opacity: 1; }
-
-        /* Controles flutuantes (DarkMode e Redes Sociais) */
-        .side-controls {
-            position: absolute; top: 15px; right: 15px;
-            display: flex; flex-direction: column; gap: 8px;
-            align-items: center;
-        }
-
-        .btn-control {
-            width: 38px; height: 38px;
-            background: rgba(255, 255, 255, 0.15); color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.1em; backdrop-filter: blur(4px);
-            text-decoration: none; transition: 0.2s;
-        }
-        .btn-control:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
-
-        /* Container do formulário */
-        .container { max-width: 900px; margin: 0 auto; background: var(--white); padding: 15px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .section-title { font-weight: 700; color: var(--primary); margin: 20px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 0.85em; text-transform: uppercase; }
-        body.dark-mode .section-title { color: #60a5fa; border-color: #60a5fa; }
-
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        label { display: block; font-weight: 600; font-size: 0.75em; color: #747d8c; margin-bottom: 4px; }
-        body.dark-mode label { color: #94a3b8; }
-
-        input, select { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; font-size: 0.9em; background: var(--input-bg); color: var(--text); }
-
-        /* 4. COMPONENTES DE GESTÃO DE MEMBROS */
-        .legenda-dispo { 
-            background: #fffbe6; border: 1px solid #ffe58f; padding: 10px; 
-            border-radius: 10px; margin-bottom: 15px; font-size: 0.75em; color: #856404;
-            display: flex; flex-direction: column; gap: 5px;
-        }
-        body.dark-mode .legenda-dispo { background: #1e1b0b; border-color: #423b13; color: #fbbf24; }
-        .legenda-item { display: flex; align-items: center; gap: 8px; }
-
-        .cadastro-membros { display: flex; gap: 8px; margin-bottom: 15px; }
-        .lista-membros { background: var(--input-bg); border-radius: 10px; padding: 10px; max-height: 300px; overflow-y: auto; border: 1px solid var(--border); }
-        
-        .membro-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px; border-bottom: 1px solid var(--border); background: var(--white);
-            border-radius: 8px; margin-bottom: 5px;
-        }
-        .membro-info { display: flex; flex-direction: column; gap: 5px; }
-        .membro-nome { font-weight: bold; font-size: 0.9em; }
-        
-        /* Botões de dias (D, S, T, Q...) */
-        .mini-dias { display: flex; gap: 4px; }
-        .mini-dia-btn { 
-            width: 24px; height: 24px; font-size: 0.6em; border-radius: 5px; 
-            border: 1px solid var(--border); background: #eee; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-weight: bold;
-        }
-        .mini-dia-btn.active { background: var(--success); color: white; border-color: var(--success); }
-        .mini-dia-btn.inactive { background: #f8d7da; color: #721c24; border-color: #f5c6cb; text-decoration: line-through; opacity: 0.6; }
-        
-        body.dark-mode .mini-dia-btn.inactive { background: #451a1a; color: #f87171; border-color: #7f1d1d; opacity: 1; }
-
-        /* 5. CONFIGURAÇÕES DE FREQUÊNCIA (CARDS DOS DIAS) */
-        .weekdays { display: flex; justify-content: space-between; gap: 4px; margin: 15px 0; width: 100%; }
-        .day-card { 
-            flex: 1; min-width: 0; background: var(--white); padding: 8px 2px; border: 2px solid var(--border); 
-            border-radius: 10px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center;
-        }
-        .day-card.active { border-color: var(--primary); background: rgba(0, 46, 93, 0.1); }
-        body.dark-mode .day-card.active { border-color: #60a5fa; background: rgba(96, 165, 250, 0.1); }
-
-        .day-name { font-weight: 800; font-size: 0.7em; margin-bottom: 5px; }
-        .day-card input[type="number"] { width: 85%; max-width: 38px; padding: 4px 0; text-align: center; border-radius: 6px; border: 1px solid #ccc; font-size: 0.75em; font-weight: bold; background: white; color: black; }
-        
-        .label-pess { font-size: 0.55em; color: #888; margin-top: 2px; }
-        body.dark-mode .label-pess { color: #cbd5e1; }
-
-        .especial-input-div { display: none; border-top: 1px solid #eee; margin-top: 5px; padding-top: 5px; }
-
-        /* 6. BOTÕES DE AÇÃO */
-        .actions { margin: 25px 0; display: flex; gap: 8px; flex-wrap: wrap; }
-        .actions button { flex: 1; height: 45px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 0.85em; transition: 0.2s; }
-        .btn-generate { background: var(--primary); color: white; }
-        .btn-download { background: var(--secondary); color: white; }
-        
-        .btn-clear { 
-            background: #f8f9fa; 
-            color: var(--danger); 
-            border: 1px solid #eee !important;
-        }
-        .btn-clear:hover { 
-            background: #fff5f5;
-            border-color: var(--danger) !important;
-            transform: translateY(-2px);
-        }
-        body.dark-mode .btn-clear {
-            background: #1e293b;
-            border-color: #334155 !important;
-        }
-        body.dark-mode .btn-clear:hover {
-            background: #451a1a;
-            border-color: var(--danger) !important;
-        }
-
-        /* 7. TABELA DE RESULTADOS */
-        #escalaResultado { padding: 25px; background: var(--white); border-radius: 10px; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; text-align: left; }
-        th { background: #f8f9fa; color: var(--primary); padding: 12px 8px; border-bottom: 2px solid var(--primary); }
-        body.dark-mode th { background: #334155; color: #fff; border-bottom-color: #60a5fa; }
-        td { padding: 12px 8px; border-bottom: 1px solid var(--border); }
-        body.dark-mode td { color: #f1f5f9; }
-        
-        .btn-icon { background: none; border: none; cursor: pointer; font-size: 1.1em; padding: 4px; opacity: 0.7; }
-        body.dark-mode .btn-icon { filter: brightness(1.5); }
-        .titulo-escala-gerada { display: none; color: var(--primary); margin: 10px 0; font-size: 1.5em; font-weight: 800; text-transform: uppercase; }
-        body.dark-mode .titulo-escala-gerada { color: #fff; }
-
-        /* Badges específicas para o departamento de Louvor */
-        .badge-louvor { font-size: 0.75em; font-weight: bold; text-transform: uppercase; padding: 2px 5px; border-radius: 4px; margin-right: 5px; display: inline-block; min-width: 100px; text-align: center; }
-        .bg-congregacional { background: #e3f2fd; color: #0d47a1; }
-        .bg-especial { background: #f3e5f5; color: #4a148c; }
-        body.dark-mode .bg-congregacional { background: #1e3a8a; color: #bfdbfe; }
-        body.dark-mode .bg-especial { background: #4c1d95; color: #ddd6fe; }
-
-        /* Ocultação de elementos durante o "print" da imagem */
-        .capturando .col-acoes, .capturando .btn-theme-toggle, .capturando .side-controls, .capturando .no-capture { display: none !important; }
-        .capturando .titulo-escala-gerada { display: block !important; }
-        .capturando { width: 600px !important; }
-    </style>
-</head>
-<body>
-
-<div class="header-app no-capture">
-    <div class="side-controls">
-        <button class="btn-control btn-theme-toggle" onclick="toggleDarkMode()" title="Mudar Tema">🌓</button>
-        <a href="https://www.instagram.com/boavista_iasd/" target="_blank" class="btn-control" title="Instagram">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.282.11-.705.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/></svg>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="header-app no-capture">
+      <div class="side-controls">
+        <button
+          class="btn-control btn-theme-toggle"
+          onclick="toggleDarkMode()"
+          title="Mudar Tema"
+        >
+          🌓
+        </button>
+        <a
+          href="https://www.instagram.com/iasdcoqueiral/"
+          target="_blank"
+          class="btn-control"
+          title="Instagram"
+        >
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.282.11-.705.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"
+            />
+          </svg>
         </a>
-        <a href="https://www.youtube.com/@iasdgoiana" target="_blank" class="btn-control" title="YouTube">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.007 2.007 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.367-.102-3.287-.348a2.007 2.007 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.007 2.007 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.788 99.788 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408L6.4 5.209z"/></svg>
+        <a
+          href="https://www.youtube.com/@adventistascoqueiral753"
+          target="_blank"
+          class="btn-control"
+          title="YouTube"
+        >
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.007 2.007 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.367-.102-3.287-.348a2.007 2.007 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.007 2.007 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.788 99.788 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408L6.4 5.209z"
+            />
+          </svg>
         </a>
+        <a
+          href="https://github.com/MrKronox/escala-boa-vista"
+          target="_blank"
+          class="btn-control"
+          title="GitHub"
+        >
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <img src="img/logo.svg" class="logo-header" alt="IASD" />
+      <h2 style="margin: 0; font-size: 1.2em; letter-spacing: 1px">
+        Departamento de Comunicação - ESCALAS
+      </h2>
+      <div class="by-header">igreja adventista do sétimo dia Coqueiral</div>
     </div>
 
-    <img src="https://identidade.adventistas.org/pt/assets/img/iasd_logo.svg" class="logo-header" alt="IASD">
-    <h2 style="margin:0; font-size: 1.2em; letter-spacing: 1px;">GERADOR DE ESCALAS</h2>
-    <div class="by-header">by comunicação boa vista</div>
-</div>
-
-<div class="container">
-    <div class="no-capture">
+    <div class="container">
+      <div class="no-capture">
         <div class="section-title">📅 Período e Departamento</div>
         <div class="grid-inputs">
-            <div>
-                <label>Departamento</label>
-                <select id="tipoEscala" onchange="verificarOutros()">
-                    <option value="Técnicos de Som">🔊 Técnicos de Som</option>
-                    <option value="Escola Sabatina">📖 Escola Sabatina</option>
-                    <option value="Pregação">📢 Pregação</option>
-                    <option value="Louvor">🎤 Louvor (Congregacional + Especial)</option>
-                    <option value="Recepção">🤝 Recepção</option>
-                    <option value="Diáconos">👔 Diáconos</option>
-                    <option value="Limpeza">🧹 Limpeza</option>
-                    <option value="Ministério Infantil">🧒 Ministério Infantil</option>
-                    <option value="Outros">✨ Outros...</option>
-                </select>
-                <input type="text" id="outroTipo" placeholder="Nome do depto" style="display:none; margin-top:8px;">
-            </div>
-            <div><label>Mês de Referência</label><input type="month" id="selecaoMes" onchange="preencherDatasPeloMes()"></div>
-            <div><label>Data Início</label><input type="date" id="dataInicio"></div>
-            <div><label>Data Fim</label><input type="date" id="dataFim"></div>
+          <div>
+            <label>Departamento</label>
+            <select id="tipoEscala" onchange="verificarOutros()">
+              <option value="Sonoplastia">🔊 Sonoplastia</option>
+              <option value="Escola Sabatina">📖 Escola Sabatina</option>
+              <option value="Pregação">📢 Pregação</option>
+              <option value="Louvor">
+                🎤 Louvor (Congregacional + Especial)
+              </option>
+              <option value="Recepção">🤝 Recepção</option>
+              <option value="Diáconos">👔 Diáconos</option>
+              <option value="Limpeza">🧹 Limpeza</option>
+              <option value="Ministério Infantil">
+                🧒 Ministério Infantil
+              </option>
+              <option value="Outros">✨ Outros...</option>
+            </select>
+            <input
+              type="text"
+              id="outroTipo"
+              placeholder="Nome do depto"
+              style="display: none; margin-top: 8px"
+            />
+          </div>
+          <div>
+            <label>Mês de Referência</label
+            ><input
+              type="month"
+              id="selecaoMes"
+              onchange="preencherDatasPeloMes()"
+            />
+          </div>
+          <div>
+            <label>Data Início</label><input type="date" id="dataInicio" />
+          </div>
+          <div><label>Data Fim</label><input type="date" id="dataFim" /></div>
         </div>
 
         <div class="section-title">👥 Gestão de Equipe</div>
-        
+
         <div class="legenda-dispo">
-            <div class="legenda-item"><strong>Guia:</strong> Clique nas letras para definir a disponibilidade semanal.</div>
-            <div style="display: flex; gap: 15px; margin-top: 5px;">
-                <div class="legenda-item"><span class="mini-dia-btn active">D</span> <span>Disponível</span></div>
-                <div class="legenda-item"><span class="mini-dia-btn inactive">D</span> <span>Indisponível</span></div>
+          <div class="legenda-item">
+            <strong>Guia:</strong> Clique nas letras para definir a
+            disponibilidade semanal.
+          </div>
+          <div style="display: flex; gap: 15px; margin-top: 5px">
+            <div class="legenda-item">
+              <span class="mini-dia-btn active">D</span> <span>Disponível</span>
             </div>
+            <div class="legenda-item">
+              <span class="mini-dia-btn inactive">D</span>
+              <span>Indisponível</span>
+            </div>
+          </div>
         </div>
 
         <div class="cadastro-membros">
-            <input type="text" id="novoNome" placeholder="Nome do voluntário...">
-            <button onclick="adicionarMembro('geral')" style="width: 100px; border-radius: 10px; background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer;">+ Add</button>
+          <input
+            type="text"
+            id="novoNome"
+            placeholder="Nome do voluntário..."
+          />
+          <button
+            onclick="adicionarMembro('geral')"
+            style="
+              width: 100px;
+              border-radius: 10px;
+              background: var(--primary);
+              color: white;
+              border: none;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            + Add
+          </button>
         </div>
         <div class="lista-membros" id="listaMembrosGeral"></div>
 
-        <div id="divLouvorEspecial" style="display:none;">
-            <div class="section-title">🌟 Equipe Louvor Especial</div>
-            <div class="cadastro-membros">
-                <input type="text" id="novoNomeEsp" placeholder="Nome do voluntário...">
-                <button onclick="adicionarMembro('especial')" style="width: 100px; border-radius: 10px; background: var(--secondary); color: white; border: none; font-weight: bold; cursor: pointer;">+ Add</button>
-            </div>
-            <div class="lista-membros" id="listaMembrosEspecial"></div>
+        <div id="divLouvorEspecial" style="display: none">
+          <div class="section-title">🌟 Equipe Louvor Especial</div>
+          <div class="cadastro-membros">
+            <input
+              type="text"
+              id="novoNomeEsp"
+              placeholder="Nome do voluntário..."
+            />
+            <button
+              onclick="adicionarMembro('especial')"
+              style="
+                width: 100px;
+                border-radius: 10px;
+                background: var(--secondary);
+                color: white;
+                border: none;
+                font-weight: bold;
+                cursor: pointer;
+              "
+            >
+              + Add
+            </button>
+          </div>
+          <div class="lista-membros" id="listaMembrosEspecial"></div>
         </div>
 
         <div class="section-title">⚙️ Frequência (Dias e Pessoas)</div>
         <div class="weekdays" id="diasSelecao"></div>
-    </div>
+      </div>
 
-    <div class="actions no-capture">
-        <button class="btn-generate" onclick="gerarEscala()">🚀 Gerar Escala</button>
-        <button class="btn-download" onclick="baixarEscala()">📥 Baixar Escala</button>
+      <div class="actions no-capture">
+        <button class="btn-generate" onclick="gerarEscala()">
+          🚀 Gerar Escala
+        </button>
+        <button class="btn-download" onclick="baixarEscala()">
+          📥 Baixar Escala
+        </button>
         <button class="btn-clear" onclick="limparTudo()">⚠️ Limpar Tudo</button>
-    </div>
+      </div>
 
-    <div id="escalaResultado">
+      <div id="escalaResultado">
         <h2 id="tituloEscala" class="titulo-escala-gerada"></h2>
         <table id="tabelaEscala">
-            <thead>
-                <tr>
-                    <th style="width: 25%;">Data</th>
-                    <th style="width: 15%;">Dia</th>
-                    <th>Responsáveis</th>
-                    <th class="col-acoes" style="width: 75px;">Ações</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
+          <thead>
+            <tr>
+              <th style="width: 25%">Data</th>
+              <th style="width: 15%">Dia</th>
+              <th>Responsáveis</th>
+              <th class="col-acoes" style="width: 75px">Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
         </table>
+      </div>
     </div>
-</div>
 
-<script>
-    /* ============================================================
-       1. CONFIGURAÇÕES INICIAIS E VARIÁVEIS GLOBAIS
-       ============================================================ */
-    const diasSemanaNome = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-    let membrosGeral = JSON.parse(localStorage.getItem('membros_geral')) || [];
-    let membrosEspecial = JSON.parse(localStorage.getItem('membros_especial')) || [];
-
-    // Função executada ao abrir a página
-    window.onload = () => {
-        if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
-        const hoje = new Date();
-        document.getElementById('selecaoMes').value = hoje.toISOString().substring(0, 7);
-        preencherDatasPeloMes();
-        renderizarMembros('geral');
-        renderizarMembros('especial');
-        
-        // Criação dinâmica dos cards de Segunda a Domingo
-        const containerDias = document.getElementById('diasSelecao');
-        diasSemanaNome.forEach((dia, index) => {
-            const isDefault = [0,3,6].includes(index); // Padrão: Dom, Qua, Sáb marcados
-            containerDias.innerHTML += `
-                <div class="day-card ${isDefault ? 'active' : ''}" id="card-${index}" onclick="toggleCard(${index})">
-                    <span class="day-name">${dia}</span>
-                    <input type="checkbox" id="dia-${index}" ${isDefault ? 'checked' : ''} style="display:none">
-                    <label class="label-pess">Pess.</label>
-                    <input type="number" id="qtd-${index}" value="1" min="1" onclick="event.stopPropagation()">
-                    <div class="especial-input-div" id="esp-div-${index}">
-                        <label class="label-pess">Esp.</label>
-                        <input type="number" id="qtd-esp-${index}" value="1" min="0" onclick="event.stopPropagation()">
-                    </div>
-                </div>
-            `;
-        });
-    };
-
-    /* ============================================================
-       2. FUNÇÕES DE GESTÃO DE MEMBROS (ADD / REMOVE / RENDER)
-       ============================================================ */
-    function adicionarMembro(tipo) {
-        const idCampo = tipo === 'geral' ? 'novoNome' : 'novoNomeEsp';
-        const input = document.getElementById(idCampo);
-        const nome = input.value.trim();
-        if(!nome) return;
-        const novo = { nome: nome, disponivel: [0,1,2,3,4,5,6] };
-        if(tipo === 'geral') membrosGeral.push(novo);
-        else membrosEspecial.push(novo);
-        input.value = "";
-        salvarDados();
-        renderizarMembros(tipo);
-    }
-
-    function renderizarMembros(tipo) {
-        const lista = document.getElementById(tipo === 'geral' ? 'listaMembrosGeral' : 'listaMembrosEspecial');
-        const array = tipo === 'geral' ? membrosGeral : membrosEspecial;
-        lista.innerHTML = array.length ? "" : `<div style='text-align:center; color:#999; padding:10px; font-size:0.8em;'>Nenhum voluntário cadastrado.</div>`;
-        array.forEach((m, idx) => {
-            let botoesDias = "";
-            diasSemanaNome.forEach((dia, dIdx) => {
-                const ativo = m.disponivel.includes(dIdx);
-                botoesDias += `<button class="mini-dia-btn ${ativo ? 'active' : 'inactive'}" onclick="toggleDiaMembro('${tipo}', ${idx}, ${dIdx})">${dia[0]}</button>`;
-            });
-            lista.innerHTML += `<div class="membro-item"><div class="membro-info"><span class="membro-nome">${m.nome}</span><div class="mini-dias">${botoesDias}</div></div><button onclick="removerMembro('${tipo}', ${idx})" style="border:none; background:none; cursor:pointer; color:var(--danger)">🗑️</button></div>`;
-        });
-    }
-
-    function toggleDiaMembro(tipo, mIdx, dIdx) {
-        const array = tipo === 'geral' ? membrosGeral : membrosEspecial;
-        const pos = array[mIdx].disponivel.indexOf(dIdx);
-        if(pos > -1) array[mIdx].disponivel.splice(pos, 1);
-        else array[mIdx].disponivel.push(dIdx);
-        salvarDados();
-        renderizarMembros(tipo);
-    }
-
-    function removerMembro(tipo, idx) {
-        if(tipo === 'geral') membrosGeral.splice(idx, 1);
-        else membrosEspecial.splice(idx, 1);
-        salvarDados();
-        renderizarMembros(tipo);
-    }
-
-    /* ============================================================
-       3. PERSISTÊNCIA E CONFIGURAÇÕES DE UI
-       ============================================================ */
-    function salvarDados() {
-        localStorage.setItem('membros_geral', JSON.stringify(membrosGeral));
-        localStorage.setItem('membros_especial', JSON.stringify(membrosEspecial));
-    }
-
-    function verificarOutros() {
-        const sel = document.getElementById('tipoEscala');
-        const isLouvor = sel.value === 'Louvor';
-        document.getElementById('outroTipo').style.display = (sel.value === 'Outros') ? 'block' : 'none';
-        document.getElementById('divLouvorEspecial').style.display = isLouvor ? 'block' : 'none';
-        for(let i=0; i<7; i++) document.getElementById(`esp-div-${i}`).style.display = isLouvor ? 'block' : 'none';
-    }
-
-    function toggleDarkMode() {
-        document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
-
-    function toggleCard(index) {
-        const cb = document.getElementById(`dia-${index}`);
-        cb.checked = !cb.checked;
-        document.getElementById(`card-${index}`).classList.toggle('active');
-    }
-
-    function preencherDatasPeloMes() {
-        const [ano, mes] = document.getElementById('selecaoMes').value.split('-');
-        document.getElementById('dataInicio').value = `${ano}-${mes}-01`;
-        document.getElementById('dataFim').value = new Date(ano, mes, 0).toISOString().substring(0, 10);
-    }
-
-    /* ============================================================
-       4. LÓGICA DE GERAÇÃO DA ESCALA (O CORAÇÃO DO APP)
-       ============================================================ */
-    function gerarEscala() {
-        if(membrosGeral.length === 0) return alert("Por favor, cadastre voluntários na equipe.");
-        
-        const deptoSelect = document.getElementById('tipoEscala');
-        const isLouvor = deptoSelect.value === 'Louvor';
-        let nomeFinal = deptoSelect.options[deptoSelect.selectedIndex].text;
-        
-        if (deptoSelect.value === 'Outros') {
-            const outroNome = document.getElementById('outroTipo').value.trim();
-            nomeFinal = outroNome ? "✨ " + outroNome : "Outros";
-        }
-
-        document.getElementById('tituloEscala').innerText = "ESCALA: " + nomeFinal;
-        document.getElementById('tituloEscala').style.display = "block";
-        const tbody = document.querySelector('#tabelaEscala tbody');
-        tbody.innerHTML = "";
-
-        let contagemGeral = {};
-        let contagemEspecial = {};
-        let dataAtual = new Date(document.getElementById('dataInicio').value + "T00:00:00");
-        const dataFimObj = new Date(document.getElementById('dataFim').value + "T00:00:00");
-
-        // Loop dia a dia pelo período selecionado
-        while (dataAtual <= dataFimObj) {
-            const diaSemana = dataAtual.getDay();
-            
-            // Se o dia da semana estiver marcado como ativo
-            if (document.getElementById(`dia-${diaSemana}`).checked) {
-                const qtdCong = parseInt(document.getElementById(`qtd-${diaSemana}`).value) || 1;
-                const qtdEsp = isLouvor ? (parseInt(document.getElementById(`qtd-esp-${diaSemana}`).value) || 0) : 0;
-
-                // Filtra quem pode trabalhar neste dia
-                let aptosGeral = membrosGeral.filter(m => m.disponivel.includes(diaSemana));
-                let aptosEsp = membrosEspecial.filter(m => m.disponivel.includes(diaSemana));
-
-                // SORTEIO: Prioriza quem trabalhou menos vezes (equilíbrio)
-                let escolhidosCong = aptosGeral
-                    .sort((a, b) => (contagemGeral[a.nome] || 0) - (contagemGeral[b.nome] || 0) || (Math.random() - 0.5))
-                    .slice(0, qtdCong)
-                    .map(m => {
-                        contagemGeral[m.nome] = (contagemGeral[m.nome] || 0) + 1;
-                        return m.nome;
-                    });
-
-                let escolhidosEsp = isLouvor ? aptosEsp
-                    .sort((a, b) => (contagemEspecial[a.nome] || 0) - (contagemEspecial[b.nome] || 0) || (Math.random() - 0.5))
-                    .slice(0, qtdEsp)
-                    .map(m => {
-                        contagemEspecial[m.nome] = (contagemEspecial[m.nome] || 0) + 1;
-                        return m.nome;
-                    }) : [];
-
-                // Criação da linha na tabela
-                const row = document.createElement('tr');
-                row.dataset.isLouvor = isLouvor;
-                row.innerHTML = `
-                    <td style="font-weight:700">${dataAtual.toLocaleDateString('pt-BR')}</td>
-                    <td style="color:#666">${diasSemanaNome[diaSemana]}</td>
-                    <td class="nomes-td">
-                        ${isLouvor ? `<div class="cong-txt"><span class="badge-louvor bg-congregacional">Congregacional:</span> <span class="val">${escolhidosCong.join(', ') || '---'}</span></div>` : escolhidosCong.join(', ') || '---'}
-                        ${escolhidosEsp.length > 0 ? `<div class="esp-txt" style="margin-top:5px;"><span class="badge-louvor bg-especial">Especial:</span> <span class="val">${escolhidosEsp.join(', ')}</span></div>` : ''}
-                    </td>
-                    <td class="col-acoes">
-                        <button class="btn-icon" onclick="editarLinha(this)">✏️</button>
-                        <button class="btn-icon" onclick="excluirLinha(this)">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            }
-            dataAtual.setDate(dataAtual.getDate() + 1);
-        }
-    }
-
-    /* ============================================================
-       5. FUNÇÕES DE EDIÇÃO E EXPORTAÇÃO
-       ============================================================ */
-    function editarLinha(btn) {
-        const row = btn.closest('tr');
-        const td = row.querySelector('.nomes-td');
-        if (row.dataset.isLouvor === "true") {
-            const congAtual = td.querySelector('.cong-txt .val')?.innerText || "";
-            const espAtual = td.querySelector('.esp-txt .val')?.innerText || "";
-            const novoCong = prompt("Editar Congregacional:", congAtual);
-            if (novoCong !== null) {
-                td.querySelector('.cong-txt .val').innerText = novoCong;
-                const divEsp = td.querySelector('.esp-txt .val');
-                if(divEsp) {
-                    const novoEsp = prompt("Editar Especial:", espAtual);
-                    if(novoEsp !== null) divEsp.innerText = novoEsp;
-                }
-            }
-        } else {
-            const novo = prompt("Ajustar voluntários:", td.innerText);
-            if (novo !== null) td.innerText = novo;
-        }
-    }
-
-    async function baixarEscala() {
-        document.body.classList.add('capturando');
-        setTimeout(() => {
-            html2canvas(document.getElementById('escalaResultado'), { scale: 2, useCORS: true }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Escala.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-                document.body.classList.remove('capturando');
-            });
-        }, 100);
-    }
-
-    function excluirLinha(btn) { if(confirm("Remover este dia?")) btn.closest('tr').remove(); }
-    
-    function limparTudo() { 
-        if(confirm("Isso apagará todos os membros cadastrados e a escala. Deseja continuar?")) { 
-            localStorage.clear(); 
-            location.reload(); 
-        } 
-    }
-</script>
-</body>
+    <script src="js/script.js"></script>
+  </body>
 </html>
