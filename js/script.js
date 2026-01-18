@@ -281,6 +281,19 @@ async function baixarEscala() {
   const tabelaOrig = document.getElementById("escalaResultado");
   const tabelaClone = tabelaOrig.cloneNode(true);
   
+  // Remove a coluna "Ações" do clone para não aparecer no PDF
+  tabelaClone.querySelectorAll(".col-acoes").forEach(el => el.remove());
+  
+  // Centraliza a coluna "Responsáveis" (cabeçalho e corpo)
+  // Cabeçalho (3ª coluna)
+  const headers = tabelaClone.querySelectorAll("th");
+  if (headers[2]) headers[2].style.textAlign = "center";
+  
+  // Corpo (células com classe .nomes-td)
+  tabelaClone.querySelectorAll(".nomes-td").forEach(el => {
+    el.style.textAlign = "center";
+  });
+  
   printContainer.appendChild(headerClone);
   printContainer.appendChild(tabelaClone);
   document.body.appendChild(printContainer);
