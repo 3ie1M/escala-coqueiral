@@ -122,6 +122,12 @@
             </div>
           </div>
         </div>
+        
+        <div class="team-actions no-capture">
+          <button class="btn-team-action" onclick="exportarEquipe()">📥 Exportar Equipe (JSON)</button>
+          <button class="btn-team-action" onclick="document.getElementById('importarArquivo').click()">📤 Importar Equipe (JSON)</button>
+          <input type="file" id="importarArquivo" accept=".json" onchange="importarEquipe(event)" style="display: none;" />
+        </div>
 
         <div class="cadastro-membros">
           <input
@@ -199,6 +205,52 @@
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Modal Customizado de Alerta e Confirmação -->
+    <div id="modalAviso" class="modal-overlay" style="display: none;">
+      <div class="modal-content small">
+        <div class="modal-header">
+          <span id="modalAvisoTitulo">Aviso</span>
+        </div>
+        <div class="modal-body">
+          <p id="modalAvisoTexto" style="margin: 0;"></p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnModalAvisoCancelar" class="btn-modal btn-clear" style="display: none;">Cancelar</button>
+          <button id="btnModalAvisoConfirmar" class="btn-modal btn-generate">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Customizado de Edição de Linha -->
+    <div id="modalEditar" class="modal-overlay" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>Editar Voluntários</span>
+          <button class="btn-close-modal" onclick="fecharModalEditar()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="camposEdicaoNormal">
+            <label>Voluntários</label>
+            <input type="text" id="editVoluntariosNormal" placeholder="Nomes dos voluntários..." />
+          </div>
+          <div id="camposEdicaoLouvor" style="display: none;">
+            <div style="margin-bottom: 12px;">
+              <label>Congregacional</label>
+              <input type="text" id="editVoluntariosCong" placeholder="Nomes do louvor congregacional..." />
+            </div>
+            <div>
+              <label>Especial</label>
+              <input type="text" id="editVoluntariosEsp" placeholder="Nomes da música especial..." />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-modal btn-clear" onclick="fecharModalEditar()">Cancelar</button>
+          <button class="btn-modal btn-generate" id="btnSalvarEdicao">Salvar</button>
+        </div>
       </div>
     </div>
 

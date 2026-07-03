@@ -87,6 +87,46 @@ function removerMembro(tipo, idx) {
   renderizarMembros(tipo);
 }
 
+function exportarEquipe() {
+  const dados = {
+    membrosGeral: membrosGeral,
+    membrosEspecial: membrosEspecial
+  };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dados, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", "equipe-escala.json");
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+async function importarEquipe(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const dados = JSON.parse(e.target.result);
+      if (dados && (Array.isArray(dados.membrosGeral) || Array.isArray(dados.membrosEspecial))) {
+        if (dados.membrosGeral) membrosGeral = dados.membrosGeral;
+        if (dados.membrosEspecial) membrosEspecial = dados.membrosEspecial;
+        salvarDados();
+        renderizarMembros("geral");
+        renderizarMembros("especial");
+        await mostrarAlerta("Equipe importada com sucesso!", "Sucesso");
+      } else {
+        await mostrarAlerta("Arquivo JSON inválido. Verifique o formato.", "Erro");
+      }
+    } catch (err) {
+      await mostrarAlerta("Erro ao ler o arquivo JSON.", "Erro");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+}
+
 /* ============================================================
  3. PERSISTÊNCIA E CONFIGURAÇÕES DE UI
  ============================================================ */
